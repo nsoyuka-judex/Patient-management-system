@@ -19,9 +19,9 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-tk**)erl36xn((#_zt(w&)(yf#8y5x*bj7fpcx@6nd8z=kb-%0"
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = True  # Set to False in production
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]  # Add your domain/IP in production
 
