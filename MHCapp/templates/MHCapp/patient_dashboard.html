@@ -1,0 +1,53 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<h2 class="mb-4">Welcome, {{ request.user.username|capfirst }} 👋</h2>
+
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">📅 Book an Appointment</h5>
+        <p class="card-text">Schedule a visit with your doctor.</p>
+        <a href="{% url 'book_appointment' %}" class="btn btn-primary">Book Now</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">📖 View My Records</h5>
+        <p class="card-text">See your medical history and treatment summaries.</p>
+        <a href="{% url 'patient_medical_records' %}" class="btn btn-info">View Records</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if appointments %}
+  <h4 class="mt-5">📋 My Appointments</h4>
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Doctor</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appointment in appointments %}
+        <tr>
+          <td>{{ appointment.date_time|date:"M d, Y – H:i" }}</td>
+          <td>{{ appointment.doctor.user.username|capfirst }}</td>
+          <td>{{ appointment.status }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="text-muted">No appointments scheduled yet.</p>
+{% endif %}
+
+{% endblock %}

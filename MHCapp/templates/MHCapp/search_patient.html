@@ -1,0 +1,30 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+  <h2 class="mb-4">Search Patient Records</h2>
+  <form method="get" class="form-inline mb-3">
+    <input type="text" name="q" class="form-control mr-2" placeholder="Search by username" value="{{ query }}">
+    <button type="submit" class="btn btn-outline-primary">Search</button>
+  </form>
+
+  {% if patients %}
+    <ul class="list-group">
+      {% for patient in patients %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ patient.user.username }}
+          <a href="{% url 'view_patient_records' patient.id %}" class="btn btn-sm btn-info">View Records</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif query %}
+    <p class="text-muted">No matching patients found.</p>
+  {% endif %}
+  {% if user.is_authenticated %}
+  {% if user.doctor %}
+    <a href="{% url 'doctor_dashboard' %}" class="btn btn-secondary mt-4">Return to Doctor Dashboard</a>
+  {% elif user.patient %}
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary mt-4">Return to Patient Dashboard</a>
+  {% endif %}
+{% endif %}
+{% endblock %}

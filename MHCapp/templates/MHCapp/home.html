@@ -1,0 +1,24 @@
+{% extends 'MHCapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Home – DocHealthcheck{% endblock %}
+
+{% block content %}
+  <div class="row align-items-center">
+    <div class="col-sm-6">
+      <img src="{% static 'MHCapp/home_doctor.png' %}" alt="Doctor illustration" class="img-fluid rounded">
+    </div>
+    <div class="col-sm-6">
+      <h2>Welcome to DocHealthcheck</h2>
+      <p class="lead">
+        Your secure digital companion for managing appointments, patient histories, and medical workflows with confidence.
+      </p>
+      <div class="mt-4">
+        <a class="btn btn-primary mr-2" href="{% url 'login' %}">Login</a>
+        <a class="btn btn-success mr-2" href="{% url 'register' %}">Register as Patient</a>
+        <a class="btn btn-info" href="{% url 'register_doctor' %}">Register as Doctor</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

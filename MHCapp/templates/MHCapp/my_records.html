@@ -1,0 +1,34 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<h2 class="mb-4">My Medical Records</h2>
+
+{% if records %}
+  <div class="row">
+    {% for record in records %}
+      <div class="col-md-6 mb-4">
+        <div class="card border-secondary shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">From Dr. {{ record.doctor.user.username|capfirst }}</h5>
+            <p><strong>Date:</strong> {{ record.created_at|date:"M d, Y – H:i" }}</p>
+            <p><strong>Diagnosis:</strong><br>{{ record.diagnosis }}</p>
+            <p><strong>Prescription:</strong><br>{{ record.prescription }}</p>
+            <p><strong>Lab Results:</strong><br>{{ record.lab_results }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted">No medical records available at this time.</p>
+{% endif %}
+{% if user.is_authenticated %}
+  {% if user.doctor %}
+    <a href="{% url 'doctor_dashboard' %}" class="btn btn-secondary mt-4">Return to Doctor Dashboard</a>
+  {% elif user.patient %}
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary mt-4">Return to Patient Dashboard</a>
+  {% endif %}
+{% endif %}
+
+{% endblock %}

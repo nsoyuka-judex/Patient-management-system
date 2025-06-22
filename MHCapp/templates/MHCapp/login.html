@@ -1,0 +1,30 @@
+{% extends 'MHCapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Login to DocHealthcheck</h2>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field|add_class:"form-control" }}
+              {{ field.errors }}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+        <div class="mt-3 text-center">
+          <p>New here? <a href="{% url 'register' %}">Patient Sign Up</a> or <a href="{% url 'register_doctor' %}">Doctor Sign Up</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

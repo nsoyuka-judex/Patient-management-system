@@ -1,0 +1,40 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+  <h2 class="mb-4">All Appointments</h2>
+  {% if appointments %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Date & Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in appointments %}
+          <tr>
+            <td>{{ appointment.patient.user.username }}</td>
+            <td>{{ appointment.date_time|date:"M d, Y – H:i" }}</td>
+            <td>{{ appointment.status }}</td>
+            <td>
+              <a href="{% url 'view_patient_records' appointment.patient.id %}" class="btn btn-sm btn-outline-secondary">Records</a>
+              <a href="{% url 'complete_appointment' appointment.id %}" class="btn btn-sm btn-outline-success">Complete</a>
+              <a href="{% url 'cancel_appointment' appointment.id %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="text-muted">No appointments found.</p>
+  {% endif %}
+  {% if user.is_authenticated %}
+  {% if user.doctor %}
+    <a href="{% url 'doctor_dashboard' %}" class="btn btn-secondary mt-4">Return to Doctor Dashboard</a>
+  {% elif user.patient %}
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary mt-4">Return to Patient Dashboard</a>
+  {% endif %}
+{% endif %}
+{% endblock %}

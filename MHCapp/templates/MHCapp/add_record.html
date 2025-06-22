@@ -1,0 +1,25 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+<h2 class="mb-4">Add Record for {{ patient.user.username|capfirst }}</h2>
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {{ field.errors }}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-info btn-block">Save Record</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

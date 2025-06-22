@@ -1,0 +1,32 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<h2 class="mb-4">Medical Records – {{ patient.user.username|capfirst }}</h2>
+
+<div class="mb-3 text-right">
+  <a href="{% url 'add_medical_record' patient.id %}" class="btn btn-sm btn-primary">
+    ➕ Add Medical Record
+  </a>
+</div>
+
+{% if records %}
+  <div class="row">
+    {% for record in records %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Record from {{ record.created_at|date:"M d, Y – H:i" }}</h5>
+            <p><strong>Diagnosis:</strong><br>{{ record.diagnosis }}</p>
+            <p><strong>Prescription:</strong><br>{{ record.prescription }}</p>
+            <p><strong>Lab Results:</strong><br>{{ record.lab_results }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted">No medical records available for this patient.</p>
+{% endif %}
+
+{% endblock %}

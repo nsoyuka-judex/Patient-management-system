@@ -1,0 +1,29 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+  <div class="container mt-4">
+    <h2>Medical Records for {{ patient.user.username|capfirst }}</h2>
+
+    {% if records %}
+      <ul class="list-group mt-3">
+        {% for record in records %}
+          <li class="list-group-item">
+            <strong>Date:</strong> {{ record.created_at|date:"D d M Y H:i" }}<br>
+            <strong>Doctor:</strong> {{ record.doctor.user.username|capfirst }}<br>
+            <strong>Diagnosis:</strong> {{ record.diagnosis }}<br>
+            <strong>Prescription:</strong> {{ record.prescription }}<br>
+            <strong>Lab Results:</strong> {{ record.lab_results }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="mt-3 text-muted">No medical records found for this patient.</p>
+    {% endif %}
+  </div>
+  {% if user.is_authenticated %}
+  {% if user.doctor %}
+    <a href="{% url 'doctor_dashboard' %}" class="btn btn-secondary mt-4">Return to Doctor Dashboard</a>
+  {% elif user.patient %}
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary mt-4">Return to Patient Dashboard</a>
+  {% endif %}
+{% endif %}
+{% endblock %}

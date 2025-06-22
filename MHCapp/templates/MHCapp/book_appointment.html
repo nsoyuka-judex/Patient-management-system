@@ -1,0 +1,47 @@
+{% extends 'MHCapp/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<h2 class="mb-4 text-center">Book a New Appointment</h2>
+
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div class="form-group mb-3">
+            <label for="id_doctor">Doctor</label>
+            {{ form.doctor }}
+            {{ form.doctor.errors }}
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="id_date_time">Date & Time</label>
+            {{ form.date_time }}
+            {{ form.date_time.errors }}
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="id_reason">Reason</label>
+            {{ form.reason }}
+            {{ form.reason.errors }}
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Book Appointment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% if user.is_authenticated %}
+  {% if user.doctor %}
+    <a href="{% url 'doctor_dashboard' %}" class="btn btn-secondary mt-4">Return to Doctor Dashboard</a>
+  {% elif user.patient %}
+    <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary mt-4">Return to Patient Dashboard</a>
+  {% endif %}
+{% endif %}
+
+{% endblock %}
