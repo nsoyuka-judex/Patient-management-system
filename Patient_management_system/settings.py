@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]  # Add your domain/IP in production
+ALLOWED_HOSTS = ["localhost", "127.0.0.1 .onrender.com"]  # Add your domain/IP in production
 
 
 # -------------------------------------
@@ -53,6 +53,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 # -------------------------------------
@@ -132,5 +133,6 @@ AUTH_USER_MODEL = "MHCapp.User"
 # -------------------------------------
 # Default Primary Key Field
 # -------------------------------------
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
