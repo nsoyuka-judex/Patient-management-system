@@ -84,10 +84,12 @@ WSGI_APPLICATION = "Patient_management_system.wsgi.application"
 # -------------------------------------
 # Database
 # -------------------------------------
-
 import dj_database_url
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3'),
+        conn_max_age=600
+    )
 }
 
 # -------------------------------------
@@ -123,6 +125,56 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# HTTPS Enforcement
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+# HSTS Headers
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# - Caching
+
+USE_REDIS = os.getenv("USE_REDIS", "False") == "True"
+
+if USE_REDIS:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/1"),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-dev-cache"
+        }
+    }
+
+# Monitoring & Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'errors.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 # -------------------------------------
 # Custom User Model
@@ -134,5 +186,5 @@ AUTH_USER_MODEL = "MHCapp.User"
 # Default Primary Key Field
 # -------------------------------------
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+RATELIMIT_USE_CACHE = 'default'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

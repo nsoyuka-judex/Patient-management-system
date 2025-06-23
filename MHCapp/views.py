@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
+from django_ratelimit.decorators import ratelimit
 
 
 from .models import User, Patient, Doctor, Appointment, MedicalRecord
@@ -26,6 +27,7 @@ def home(request):
 # -----------------------------
 # Authentication Views
 # -----------------------------
+@ratelimit(key='ip', rate='5/m', block=True)
 def login_view(request):
     form = LoginForm(request.POST or None)
     if form.is_valid():
@@ -52,6 +54,7 @@ def logout_view(request):
 # -----------------------------
 # Patient Registration
 # -----------------------------
+@ratelimit(key='ip', rate='3/m', block=True)
 def register_patient(request):
     form = PatientRegisterForm(request.POST or None)
     if form.is_valid():
@@ -68,6 +71,7 @@ def register_patient(request):
 # -----------------------------
 # Doctor Registration
 # -----------------------------
+@ratelimit(key='ip', rate='3/m', block=True)
 def register_doctor(request):
     user_form = DoctorRegisterForm(request.POST or None)
     profile_form = DoctorProfileForm(request.POST or None)
@@ -114,6 +118,7 @@ def doctor_dashboard(request):
 # -----------------------------
 # Book Appointment
 # -----------------------------
+@ratelimit(key='user_or_ip', rate='10/m', block=True)
 @login_required
 def book_appointment(request):
     if not request.user.is_patient:
@@ -127,6 +132,7 @@ def book_appointment(request):
         messages.success(request, "Appointment booked.")
         return redirect('patient_dashboard')
     return render(request, 'MHCapp/book_appointment.html', {'form': form})
+
 
 
 # -----------------------------
@@ -187,7 +193,7 @@ def add_medical_record(request, patient_id):
         'patient': patient
     })
 
-
+@ratelimit(key='user_or_ip', rate='15/m', block=True)
 @login_required
 def view_patient_records(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
@@ -223,17 +229,19 @@ def doctor_appointments(request):
     appointments = Appointment.objects.filter(doctor=doctor).order_by('-date_time')
     return render(request, 'MHCapp/doctor_appointments.html', {'appointments': appointments})
 
+@ratelimit(key='user_or_ip', rate='15/m', block=True)
 @login_required
 def search_patient(request):
     query = request.GET.get('q')
     patients = Patient.objects.filter(user__username__icontains=query) if query else []
     return render(request, 'MHCapp/search_patient.html', {'patients': patients, 'query': query})
+@ratelimit(key='user_or_ip', rate='10/m', block=True)
 @login_required
 def doctor_messages(request):
     return render(request, 'MHCapp/doctor_messages.html')
 
 
-
+@ratelimit(key='user_or_ip', rate='10/m', block=True)
 @login_required
 def add_medical_record(request, patient_id):
     # Ensure the user is a doctor
